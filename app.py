@@ -72,7 +72,7 @@ def result():
        
     trace1 = go.Bar(x=data2['keyword'], y=data2['freq'])
     dataset = [trace1]
-    layout = go.Layout()
+    layout = go.Layout(font=dic(family="NanumGothic"))
     fig2 = go.Figure(data=dataset, layout=layout)
     
     fig2.write_image("static/plot.png", width=800, height=800)
