@@ -61,8 +61,8 @@ def result():
     tags = count.most_common(50)
     
     font_path = 'static/NotoSans-Black.otf'
-    wordcloud = WordCloud(font_path=font_path, background_color="white", width=800, height=800).generate_from_frequencies(dict(tags))
-    fig = plt.figure(figsize=(6,6))
+    wordcloud = WordCloud(font_path=font_path, background_color="white", width=1200, height=800).generate_from_frequencies(dict(tags))
+    fig = plt.figure(figsize=(12,8))
     plt.imshow(wordcloud)
     plt.axis('off')
     fig.savefig('static/wordcloud.png')
@@ -75,13 +75,25 @@ def result():
     layout = go.Layout(font=dic(family="NanumGothic"))
     fig2 = go.Figure(data=dataset, layout=layout)
     
-    fig2.write_image("static/plot.png", width=800, height=800)
+    fig2.write_image("static/plot.png", width=1200, height=800)
     
-    return render_template('result.html', value=tags, time=time.time())
+    class MyTokenizer:
+        def __call__(self, text: str) -> List[str]:
+            tokens: List[str] = text.split()
+            return tokens
 
+    mytokenizer: MyTokenizer = MyTokenizer()
+    textrank: TextRank = TextRank(mytokenizer)
 
+    k: int = 3  # num sentences in the resulting summary
 
+    with open('uploads/'+(f.filename), 'r') as file:
+            contents = file.read()
 
+    summarized: str = textrank.summarize(contents, 3)
+    
+    
+    return render_template('result.html', value=summarized, time=time.time())
 
 
 
